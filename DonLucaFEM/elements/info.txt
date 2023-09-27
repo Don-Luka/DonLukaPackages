@@ -1,0 +1,6 @@
+beam element - ready
+Timoshenko beam element - ready
+beam var - deleted
+
+disc element - corrected, still needs improvement: graphics
+plate element - corrected, still needs improvement: graphics
