@@ -107,7 +107,45 @@ def M_loc(self):
 
         return m
 Disc_Element.M_loc = M_loc
+
+def U_loc(self, U_glob):
+    return U_glob[self.dofs_list]
+Disc_Element.U_loc = U_loc
+
+def Node_Stress(self, U_glob):
     
+    u_0, v_0, u_1, v_1, u_2, v_2, u_3, v_3 = self.U_loc(U_glob)
+    
+    s_x_00 = -self.E*(self.nu*(-v_0/self.ly + v_3/self.ly) - u_0/self.lx + u_1/self.lx)/(self.nu**2 - 1)
+    s_x_01 = -self.E*(self.nu*(-v_1/self.ly + v_2/self.ly) - u_0/self.lx + u_1/self.lx)/(self.nu**2 - 1)
+    s_x_10 = -self.E*(self.nu*(-v_1/self.ly + v_2/self.ly) + u_2/self.lx - u_3/self.lx)/(self.nu**2 - 1)
+    s_x_11 = -self.E*(self.nu*(-v_0/self.ly + v_3/self.ly) + u_2/self.lx - u_3/self.lx)/(self.nu**2 - 1)
+    
+    s_y_00 = -self.E*(self.nu*(-u_0/self.lx + u_1/self.lx) - v_0/self.ly + v_3/self.ly)/(self.nu**2 - 1)
+    s_y_01 = -self.E*(self.nu*(-u_0/self.lx + u_1/self.lx) - v_1/self.ly + v_2/self.ly)/(self.nu**2 - 1)
+    s_y_10 = -self.E*(self.nu*(u_2/self.lx - u_3/self.lx) - v_1/self.ly + v_2/self.ly)/(self.nu**2 - 1)
+    s_y_11 = -self.E*(self.nu*(u_2/self.lx - u_3/self.lx) - v_0/self.ly + v_3/self.ly)/(self.nu**2 - 1)
+
+    s_xy_00 = 2*self.E*(-u_0/(2*self.ly) + u_3/(2*self.ly) - v_0/(2*self.lx) + v_1/(2*self.lx))/(2*self.nu + 2)
+    s_xy_01 = 2*self.E*(-u_1/(2*self.ly) + u_2/(2*self.ly) - v_0/(2*self.lx) + v_1/(2*self.lx))/(2*self.nu + 2)
+    s_xy_10 = 2*self.E*(-u_1/(2*self.ly) + u_2/(2*self.ly) + v_2/(2*self.lx) - v_3/(2*self.lx))/(2*self.nu + 2)
+    s_xy_11 = 2*self.E*(-u_0/(2*self.ly) + u_3/(2*self.ly) + v_2/(2*self.lx) - v_3/(2*self.lx))/(2*self.nu + 2)
+
+    return np.array([s_x_00, s_x_01, s_x_10, s_x_11]),\
+                np.array([s_y_00, s_y_01, s_y_10, s_y_11]),\
+                    np.array([s_xy_00, s_xy_01, s_xy_10, s_xy_11])
+
+Disc_Element.Node_Stress = Node_Stress
+
+
+
+
+
+
+
+
+
+
 # def deflections(self, u, v, numnum):
 #     ae, be = self.a, self.b
 #     xCe, yCe = self.x_C, self.y_C
